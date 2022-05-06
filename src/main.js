@@ -1,8 +1,11 @@
+// css初始化
+import '@/assets/css/reset.css'
+import '@/assets/js/filters'
 import Vue from 'vue'
 import App from './App.vue'
+import './plugins/vant'
 import router from './router'
 import store from './store'
-
 Vue.config.productionTip = false
 
 new Vue({
