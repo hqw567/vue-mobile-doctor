@@ -2,10 +2,17 @@
   <div class="home">
     <div class="home-top">
       <p class="top-views">{{ topViews | numberPutComma(0) }}人次已浏览</p>
-      <a href="#" class="top-btn"> <img alt="icon" class="icon___mF9Qk" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACEAAAAhCAYAAABX5MJvAAAAAXNSR0IArs4c6QAAAXpJREFUWAntlz0vBFEUhhcJK9Fso9QpKLchrI/NRnQKP0Gt2k6j8yN0IqImiI/CH1BpFUKlkCDW2miM5xU3ubnVXXvmbjMnebPnztxznjdnZmdnSyXjyLJsEt2hezRr3D6uHeBt5OKdZD6u0nAX0Cr6dC74bKGaISKuFdAGaiMXMrIYV224C2gd+UY+WC8bIuJaAV1CgruQqXpcteEuoAtIl8OF7peGISKuFdAa0jfFhYysxFUb7gI6h3wjHdarQgyQzPC5iUZ1IOeYpv+Ux/giX5OJR5IJ70Tq9GEQ4nNqasB70iTGObiOysHJFMsWkOMUoIJRTKCYQDGBniegJ+YGXbbQWM/dum/QoWRHJl5IKt3Xm1W86gfsyKzd/xpdaxJ6jzhB/ivXDesm+kZ5hi7H7S9ARtAV8mOPhSaVLgCW0aXvgnwf9cXIRWDkgPVQunFAAjiCzgMjh/0ychYY2U06DcEwoImcekbekpv4MzKMCd0T+r+gp2ou8QPJt33V+J7gWwAAAABJRU5ErkJggg==" /><span class="content___2hIPS">English Version</span> </a>
+      <router-link to="/selectCity" class="top-btn"> <img alt="icon" class="icon___mF9Qk" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACEAAAAhCAYAAABX5MJvAAAAAXNSR0IArs4c6QAAAXpJREFUWAntlz0vBFEUhhcJK9Fso9QpKLchrI/NRnQKP0Gt2k6j8yN0IqImiI/CH1BpFUKlkCDW2miM5xU3ubnVXXvmbjMnebPnztxznjdnZmdnSyXjyLJsEt2hezRr3D6uHeBt5OKdZD6u0nAX0Cr6dC74bKGaISKuFdAGaiMXMrIYV224C2gd+UY+WC8bIuJaAV1CgruQqXpcteEuoAtIl8OF7peGISKuFdAa0jfFhYysxFUb7gI6h3wjHdarQgyQzPC5iUZ1IOeYpv+Ux/giX5OJR5IJ70Tq9GEQ4nNqasB70iTGObiOysHJFMsWkOMUoIJRTKCYQDGBniegJ+YGXbbQWM/dum/QoWRHJl5IKt3Xm1W86gfsyKzd/xpdaxJ6jzhB/ivXDesm+kZ5hi7H7S9ARtAV8mOPhSaVLgCW0aXvgnwf9cXIRWDkgPVQunFAAjiCzgMjh/0ychYY2U06DcEwoImcekbekpv4MzKMCd0T+r+gp2ou8QPJt33V+J7gWwAAAABJRU5ErkJggg==" /><span class="content___2hIPS">选择城市</span> </router-link>
     </div>
     <HomeHot :hotTitle="newslist" />
     <HomeEntry />
+
+    <div class="risk">
+      <h2 class="risk-title">
+        近期疫情分布 <span>截至北京时间{{ updataTime | dataFormat }}</span>
+      </h2>
+      <div class="risk-data">高风险地区{{ highCont }}个 中风险地区{{ midCont }}个 <router-link to="/askSummary">查看全部 ></router-link></div>
+    </div>
     <HomeMap />
   </div>
 </template>
@@ -25,7 +32,8 @@ export default {
   data() {
     return {
       topViews: 4688899580,
-      newslist: []
+      newslist: [],
+      riskarea: {}
     }
   },
   filters: {
@@ -33,16 +41,55 @@ export default {
       if (!value) return ''
       value = value.toString()
       return value.charAt(0).toUpperCase() + value.slice(1)
+    },
+    dataFormat(input, pattern = '') {
+      // 在参数列表中 通过 pattern="" 来指定形参默认值，防止报错
+      const dt = new Date(input)
+
+      // 获取年月日
+
+      const y = dt.getFullYear()
+
+      const m = (dt.getMonth() + 1).toString().padStart(2, '0')
+
+      const d = dt.getDate().toString().padStart(2, '0')
+
+      // 如果 传递进来的字符串类型，转为小写之后，等于 yyyy-mm-dd，那么就返回 年-月-日
+
+      // 否则，就返回  年-月-日 时：分：秒
+
+      if (pattern.toLowerCase() === 'yyyy-mm-dd') {
+        return `${y}-${m}-${d}`
+      } else {
+        // 获取时分秒
+
+        const hh = dt.getHours().toString().padStart(2, '0')
+
+        const mm = dt.getMinutes().toString().padStart(2, '0')
+
+        const ss = dt.getSeconds().toString().padStart(2, '0')
+
+        return `${y}-${m}-${d} ${hh}:${mm}:${ss}`
+      }
     }
   },
   created() {
     api.getCovInfo().then(result => {
-      console.log(result.data)
       if (result.data.code === 200) {
         this.newslist = result.data.newslist[0]
       }
     })
-    console.log(this.newslist)
+  },
+  computed: {
+    highCont() {
+      return this.newslist.riskarea.high.length
+    },
+    midCont() {
+      return this.newslist.riskarea.mid.length
+    },
+    updataTime() {
+      return this.newslist.desc.modifyTime
+    }
   }
 }
 </script>
@@ -88,6 +135,23 @@ export default {
       margin-left: 0.1rem;
       font-size: 0.12rem;
     }
+  }
+}
+.risk {
+  margin: 20px 0;
+  background-color: #fff;
+  .risk-title {
+    font-size: 0.38rem;
+
+    span {
+      font-size: 12px;
+      color: #999;
+    }
+  }
+  .risk-data {
+    border: 1px solid #eee;
+    border-radius: 3px;
+    padding: 10px 6px;
   }
 }
 </style>

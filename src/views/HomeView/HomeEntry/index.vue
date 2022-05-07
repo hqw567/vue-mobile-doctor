@@ -1,12 +1,12 @@
 <template>
   <div class="entry">
-    <router-link to="/" class="item">
+    <router-link to="/askDoctor" class="item">
       <div class="img">
         <img src="https://img1.dxycdn.com/2021/0804/220/9442938684169526943-22.png" alt="" />
       </div>
       <div class="title">问医生</div>
     </router-link>
-    <router-link to="/" class="item">
+    <router-link to="/detection" class="item">
       <div class="img">
         <img src="https://img1.dxycdn.com/2021/0804/598/2642938684169526943-22.png" alt="" />
       </div>

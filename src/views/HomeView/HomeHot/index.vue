@@ -5,7 +5,7 @@
       <p class="watchMore"><span>查看更多</span></p>
     </div>
     <div class="mapBody">
-      <div class="newTitle" v-for="(item, index) in hotTitle.title" :key="index">
+      <div class="newTitle" v-for="(item, index) in hotTitle.news" :key="index">
         <span>最新</span>
         <p>{{ item.title }}</p>
       </div>
@@ -17,9 +17,7 @@
 export default {
   name: 'HomeHot',
   props: ['hotTitle'],
-  created() {
-    console.log(this.hotTitle)
-  }
+  created() {}
 }
 </script>
 
