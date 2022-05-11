@@ -2,7 +2,9 @@
   <div class="home">
     <div class="home-top">
       <p class="top-views">{{ topViews | numberPutComma }}人次已浏览</p>
-      <router-link to="/selectCity" class="top-btn"> <img alt="icon" class="icon___mF9Qk" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACEAAAAhCAYAAABX5MJvAAAAAXNSR0IArs4c6QAAAXpJREFUWAntlz0vBFEUhhcJK9Fso9QpKLchrI/NRnQKP0Gt2k6j8yN0IqImiI/CH1BpFUKlkCDW2miM5xU3ubnVXXvmbjMnebPnztxznjdnZmdnSyXjyLJsEt2hezRr3D6uHeBt5OKdZD6u0nAX0Cr6dC74bKGaISKuFdAGaiMXMrIYV224C2gd+UY+WC8bIuJaAV1CgruQqXpcteEuoAtIl8OF7peGISKuFdAa0jfFhYysxFUb7gI6h3wjHdarQgyQzPC5iUZ1IOeYpv+Ux/giX5OJR5IJ70Tq9GEQ4nNqasB70iTGObiOysHJFMsWkOMUoIJRTKCYQDGBniegJ+YGXbbQWM/dum/QoWRHJl5IKt3Xm1W86gfsyKzd/xpdaxJ6jzhB/ivXDesm+kZ5hi7H7S9ARtAV8mOPhSaVLgCW0aXvgnwf9cXIRWDkgPVQunFAAjiCzgMjh/0ychYY2U06DcEwoImcekbekpv4MzKMCd0T+r+gp2ou8QPJt33V+J7gWwAAAABJRU5ErkJggg==" /><span class="content___2hIPS">选择城市</span> </router-link>
+      <div class="top-btn" @click="selectCity">
+        <img alt="icon" class="icon___mF9Qk" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACEAAAAhCAYAAABX5MJvAAAAAXNSR0IArs4c6QAAAXpJREFUWAntlz0vBFEUhhcJK9Fso9QpKLchrI/NRnQKP0Gt2k6j8yN0IqImiI/CH1BpFUKlkCDW2miM5xU3ubnVXXvmbjMnebPnztxznjdnZmdnSyXjyLJsEt2hezRr3D6uHeBt5OKdZD6u0nAX0Cr6dC74bKGaISKuFdAGaiMXMrIYV224C2gd+UY+WC8bIuJaAV1CgruQqXpcteEuoAtIl8OF7peGISKuFdAa0jfFhYysxFUb7gI6h3wjHdarQgyQzPC5iUZ1IOeYpv+Ux/giX5OJR5IJ70Tq9GEQ4nNqasB70iTGObiOysHJFMsWkOMUoIJRTKCYQDGBniegJ+YGXbbQWM/dum/QoWRHJl5IKt3Xm1W86gfsyKzd/xpdaxJ6jzhB/ivXDesm+kZ5hi7H7S9ARtAV8mOPhSaVLgCW0aXvgnwf9cXIRWDkgPVQunFAAjiCzgMjh/0ychYY2U06DcEwoImcekbekpv4MzKMCd0T+r+gp2ou8QPJt33V+J7gWwAAAABJRU5ErkJggg==" /><span class="content___2hIPS">{{ fieldValue ? fieldValue : '选择城市' }}</span>
+      </div>
     </div>
     <HomeHot :hotTitle="newslist" />
     <HomeEntry />
@@ -15,11 +17,13 @@
     </div>
     <HomeMap :desc="desc" />
     <HomeSwiper />
+    <SelectCity ref="selectCity" />
   </div>
 </template>
 
 <script>
 import api from '../../api/index'
+import SelectCity from '../SelectCity'
 import HomeEntry from './HomeEntry'
 import HomeHot from './HomeHot'
 import HomeMap from './HomeMap'
@@ -30,14 +34,21 @@ export default {
     HomeHot,
     HomeEntry,
     HomeMap,
-    HomeSwiper
+    HomeSwiper,
+    SelectCity
   },
   data() {
     return {
       topViews: 4688899580,
       newslist: [1, 2],
       riskarea: {},
-      desc: {}
+      desc: {},
+      fieldValue: ''
+    }
+  },
+  methods: {
+    selectCity() {
+      this.$refs.selectCity.show = true
     }
   },
   filters: {
@@ -83,7 +94,6 @@ export default {
         this.newslist = result.data.newslist[0]
         this.riskarea = result.data.newslist[0].riskarea
         this.desc = result.data.newslist[0].desc
-        console.log(this.newslist)
       }
     })
   },

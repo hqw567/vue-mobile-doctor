@@ -1,7 +1,5 @@
 <template>
   <div>
-    <h2>请选择城市</h2>
-    <button @click="cityName()">{{ fieldValue ? fieldValue : '选择城市' }}</button>
     <van-popup v-model="show" round position="bottom">
       <van-cascader v-model="cascaderValue" title="请选择所在地区" :options="options" @close="show = false" @finish="onFinish" />
     </van-popup>
@@ -34,7 +32,6 @@ export default {
   },
   created() {
     api.getNationalCity().then(result => {
-      console.log(result.data.data)
       const res = result.data.data
       const arr = []
       res.forEach(item => {
@@ -64,10 +61,7 @@ export default {
     // 全部选项选择完毕后，会触发 finish 事件
     onFinish({ selectedOptions }) {
       this.show = false
-      this.fieldValue = selectedOptions[2].text
-    },
-    cityName() {
-      this.show = true
+      this.$parent.fieldValue = selectedOptions[2].text
     }
   }
 }
